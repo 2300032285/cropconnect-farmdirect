@@ -1,11 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, User } from "lucide-react";
+import { Leaf, Menu, User, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   onRoleSelect?: (role: 'farmer' | 'buyer') => void;
 }
 
 export function Navbar({ onRoleSelect }: NavbarProps) {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border shadow-custom-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -17,24 +27,33 @@ export function Navbar({ onRoleSelect }: NavbarProps) {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button 
-            variant="farmer" 
-            size="sm"
-            onClick={() => onRoleSelect?.('farmer')}
-          >
-            I'm a Farmer
-          </Button>
-          <Button 
-            variant="buyer" 
-            size="sm"
-            onClick={() => onRoleSelect?.('buyer')}
-          >
-            I'm a Buyer
-          </Button>
-          <Button variant="ghost" size="sm">
-            <User className="h-4 w-4" />
-            Login
-          </Button>
+          {user ? (
+            <>
+              <Button 
+                variant="farmer" 
+                size="sm"
+                onClick={() => onRoleSelect?.('farmer')}
+              >
+                Farmer Dashboard
+              </Button>
+              <Button 
+                variant="buyer" 
+                size="sm"
+                onClick={() => onRoleSelect?.('buyer')}
+              >
+                Buyer Dashboard
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+              <User className="h-4 w-4" />
+              Login
+            </Button>
+          )}
         </div>
 
         <Button variant="ghost" size="icon" className="md:hidden">
