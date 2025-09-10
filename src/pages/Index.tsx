@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { MarketplaceGrid } from "@/components/MarketplaceGrid";
 import { Features } from "@/components/Features";
+import { WeatherAlerts } from "@/components/WeatherAlerts";
 import { RoleSelector } from "@/components/RoleSelector";
 import { Dashboard } from "@/components/Dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,8 +53,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar onRoleSelect={handleRoleSelect} />
       <Hero onRoleSelect={handleRoleSelect} />
-      <MarketplaceGrid />
       <Features />
+      <WeatherAlerts />
+      <MarketplaceGrid />
       <RoleSelector onRoleSelect={handleRoleSelect} />
     </div>
   );

@@ -53,18 +53,18 @@ export function Hero({ onRoleSelect }: HeroProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="flex flex-col items-center text-primary-foreground">
               <Users className="h-8 w-8 mb-2 text-accent" />
-              <div className="text-2xl font-bold">1000+</div>
+              <div className="text-2xl font-bold">Growing</div>
               <div className="text-sm opacity-90">Active Farmers</div>
             </div>
             <div className="flex flex-col items-center text-primary-foreground">
               <Handshake className="h-8 w-8 mb-2 text-accent" />
-              <div className="text-2xl font-bold">5000+</div>
-              <div className="text-sm opacity-90">Successful Deals</div>
+              <div className="text-2xl font-bold">Daily</div>
+              <div className="text-sm opacity-90">Fresh Deals</div>
             </div>
             <div className="flex flex-col items-center text-primary-foreground">
               <TrendingUp className="h-8 w-8 mb-2 text-accent" />
-              <div className="text-2xl font-bold">30%</div>
-              <div className="text-sm opacity-90">Higher Farmer Income</div>
+              <div className="text-2xl font-bold">Fair</div>
+              <div className="text-sm opacity-90">Market Prices</div>
             </div>
           </div>
         </div>
