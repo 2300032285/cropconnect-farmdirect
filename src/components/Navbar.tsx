@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Leaf, Menu, User, LogOut } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Leaf, Menu, User, LogOut, Bell } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface NavbarProps {
   onRoleSelect?: (role: 'farmer' | 'buyer') => void;
@@ -9,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ onRoleSelect }: NavbarProps) {
   const { user, signOut } = useAuth();
+  const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -42,6 +45,14 @@ export function Navbar({ onRoleSelect }: NavbarProps) {
                 onClick={() => onRoleSelect?.('buyer')}
               >
                 Buyer Dashboard
+              </Button>
+              <Button variant="ghost" size="sm" className="relative">
+                <Bell className="h-4 w-4" />
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
+                    {unreadCount}
+                  </Badge>
+                )}
               </Button>
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4" />

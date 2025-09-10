@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Calendar, Package, Loader2 } from "lucide-react";
 import { OrderForm } from "@/components/orders/OrderForm";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: any;
@@ -12,6 +13,15 @@ interface ProductCardProps {
 }
 
 function ProductCard({ product, onOrder }: ProductCardProps) {
+  const { toast } = useToast();
+
+  const handleContact = () => {
+    toast({
+      title: "Contact Feature",
+      description: "Contact functionality will be available soon. For now, you can place an order directly.",
+    });
+  };
+
   return (
     <div className="bg-card rounded-lg shadow-custom-md hover:shadow-custom-lg transition-smooth overflow-hidden border border-border">
       <div className="relative h-48 bg-muted">
@@ -43,7 +53,7 @@ function ProductCard({ product, onOrder }: ProductCardProps) {
         <div className="space-y-2 mb-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
-            <span>{product.profiles?.farm_name || product.profiles?.full_name} • {product.location || `${product.profiles?.city}, ${product.profiles?.state}`}</span>
+            <span>{product.profiles?.farm_name || product.profiles?.full_name || "Farm"} • {product.location || `${product.profiles?.city}, ${product.profiles?.state}` || "India"}</span>
           </div>
           
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -69,7 +79,7 @@ function ProductCard({ product, onOrder }: ProductCardProps) {
             variant="outline" 
             size="sm" 
             className="flex-1"
-            disabled
+            onClick={handleContact}
           >
             Contact Farmer
           </Button>
@@ -90,12 +100,17 @@ function ProductCard({ product, onOrder }: ProductCardProps) {
 export function MarketplaceGrid() {
   const { products, isLoading } = useProducts();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [orderFormOpen, setOrderFormOpen] = useState(false);
 
   const handleOrder = (product: any) => {
     if (!user) {
-      // Redirect to auth or show login prompt
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to place an order.",
+        variant: "destructive",
+      });
       return;
     }
     setSelectedProduct(product);

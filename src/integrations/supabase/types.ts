@@ -128,7 +128,7 @@ export type Database = {
           created_at: string
           description: string | null
           expiry_date: string | null
-          farmer_id: string
+          farmer_id: string | null
           harvest_date: string | null
           id: string
           image_url: string | null
@@ -147,7 +147,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
-          farmer_id: string
+          farmer_id?: string | null
           harvest_date?: string | null
           id?: string
           image_url?: string | null
@@ -166,7 +166,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
-          farmer_id?: string
+          farmer_id?: string | null
           harvest_date?: string | null
           id?: string
           image_url?: string | null

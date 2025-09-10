@@ -1,80 +1,65 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { AlertTriangle, CloudRain, Sun, Wind, Zap } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useWeatherAlerts } from "@/hooks/useWeatherAlerts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { CloudRain, Sun, Wind, Zap, Droplets, AlertTriangle } from "lucide-react";
 
-const getWeatherIcon = (type: string) => {
-  switch (type) {
-    case 'rain':
-      return CloudRain;
-    case 'heat':
-      return Sun;
-    case 'wind':
-      return Wind;
-    case 'storm':
-      return Zap;
-    default:
-      return AlertTriangle;
-  }
+const alertIcons = {
+  rain: CloudRain,
+  heat: Sun,
+  wind: Wind,
+  storm: Zap,
+  drought: Droplets,
 };
 
-const getSeverityColor = (severity: string) => {
-  switch (severity) {
-    case 'high':
-      return 'border-red-500 bg-red-50 text-red-800';
-    case 'moderate':
-      return 'border-orange-500 bg-orange-50 text-orange-800';
-    case 'low':
-      return 'border-yellow-500 bg-yellow-50 text-yellow-800';
-    default:
-      return 'border-gray-500 bg-gray-50 text-gray-800';
-  }
+const severityColors = {
+  low: "bg-blue-100 text-blue-800 border-blue-200",
+  moderate: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  high: "bg-red-100 text-red-800 border-red-200",
 };
 
 export function WeatherAlerts() {
-  const { data: alerts, isLoading } = useQuery({
-    queryKey: ['weather-alerts'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('weather_alerts')
-        .select('*')
-        .gte('end_time', new Date().toISOString())
-        .order('start_time', { ascending: true })
-        .limit(5);
+  const { activeAlerts, isLoading } = useWeatherAlerts();
 
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  if (isLoading || !alerts || alerts.length === 0) {
-    return null;
-  }
+  if (isLoading || !activeAlerts?.length) return null;
 
   return (
     <section className="py-8 bg-muted/30">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-foreground mb-6">Weather Alerts</h2>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+            <AlertTriangle className="h-6 w-6 text-amber-500" />
+            Weather Alerts
+          </h2>
+          <p className="text-muted-foreground">
+            Stay informed about weather conditions affecting your region
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {alerts.map((alert) => {
-            const Icon = getWeatherIcon(alert.alert_type);
+          {activeAlerts.map((alert) => {
+            const Icon = alertIcons[alert.alert_type as keyof typeof alertIcons] || AlertTriangle;
+            
             return (
-              <Alert 
-                key={alert.id} 
-                className={`${getSeverityColor(alert.severity)} border-2`}
-              >
-                <Icon className="h-5 w-5" />
-                <div>
-                  <h3 className="font-semibold capitalize">
-                    {alert.alert_type} Alert - {alert.location}
-                  </h3>
-                  <AlertDescription className="mt-1">
-                    {alert.message}
-                  </AlertDescription>
-                  <div className="text-xs mt-2 opacity-75">
-                    Until {new Date(alert.end_time).toLocaleDateString()}
-                  </div>
+              <Alert key={alert.id} className="relative">
+                <Icon className="h-4 w-4" />
+                <div className="flex items-start justify-between mb-2">
+                  <AlertTitle className="text-base font-semibold">
+                    {alert.alert_type.charAt(0).toUpperCase() + alert.alert_type.slice(1)} Alert
+                  </AlertTitle>
+                  <Badge 
+                    variant="outline" 
+                    className={severityColors[alert.severity as keyof typeof severityColors]}
+                  >
+                    {alert.severity}
+                  </Badge>
                 </div>
+                <AlertDescription className="space-y-2">
+                  <p className="text-sm">{alert.message}</p>
+                  <div className="text-xs text-muted-foreground">
+                    <p>Location: {alert.location}</p>
+                    <p>Valid until: {new Date(alert.end_time).toLocaleDateString()}</p>
+                  </div>
+                </AlertDescription>
               </Alert>
             );
           })}
